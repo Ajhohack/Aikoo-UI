@@ -1,40 +1,84 @@
-local module = {}
+-- UIComponents.lua
+local Utility = require(script.Parent.Utility)
+local ThemeManager = require(script.Parent.ThemeManager)
+local Components = {}
 
-function module.CreateSwitch(parent, title, default, callback)
-    local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(1, -10, 0, 40)
-    Frame.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
-    Frame.BackgroundTransparency = 0.25
-    Frame.Parent = parent
+-- Topbar
+function Components:CreateTopbar(parent, props)
+    local bar = Instance.new("Frame")
+    bar.Size = UDim2.new(1,0,0,40)
+    bar.BackgroundColor3 = ThemeManager:GetColor("glass")
+    bar.Parent = parent
+    Utility:ApplyCorner(bar, 12)
 
-    local Corner = Instance.new("UICorner")
-    Corner.CornerRadius = UDim.new(0, 12)
-    Corner.Parent = Frame
+    -- Title
+    local title = Instance.new("TextLabel")
+    title.Text = props.Title or "UI"
+    title.Size = UDim2.new(1,-80,1,0)
+    title.Position = UDim2.new(0,10,0,0)
+    title.BackgroundTransparency = 1
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 18
+    title.TextColor3 = ThemeManager:GetColor("textPrimary")
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Parent = bar
 
-    local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(0.7, 0, 1, 0)
-    Label.BackgroundTransparency = 1
-    Label.Text = title
-    Label.TextColor3 = Color3.fromRGB(255,255,255)
-    Label.Font = Enum.Font.Gotham
-    Label.TextSize = 18
-    Label.Parent = Frame
-
-    local Toggle = Instance.new("TextButton")
-    Toggle.Size = UDim2.new(0.25, 0, 0.6, 0)
-    Toggle.Position = UDim2.new(0.7, 0, 0.2, 0)
-    Toggle.Text = default and "ON" or "OFF"
-    Toggle.BackgroundColor3 = default and Color3.fromRGB(0,200,100) or Color3.fromRGB(200,50,50)
-    Toggle.Parent = Frame
-
-    Toggle.MouseButton1Click:Connect(function()
-        default = not default
-        Toggle.Text = default and "ON" or "OFF"
-        Toggle.BackgroundColor3 = default and Color3.fromRGB(0,200,100) or Color3.fromRGB(200,50,50)
-        if callback then callback(default) end
+    -- Minimize
+    local minBtn = Instance.new("TextButton")
+    minBtn.Size = UDim2.new(0,40,1,0)
+    minBtn.Position = UDim2.new(1,-80,0,0)
+    minBtn.Text = "_"
+    minBtn.Font = Enum.Font.GothamBold
+    minBtn.TextSize = 20
+    minBtn.BackgroundTransparency = 1
+    minBtn.TextColor3 = ThemeManager:GetColor("textPrimary")
+    minBtn.Parent = bar
+    minBtn.MouseButton1Click:Connect(function()
+        if props.OnMinimize then props.OnMinimize() end
     end)
 
-    return Frame
+    -- Close
+    local closeBtn = Instance.new("TextButton")
+    closeBtn.Size = UDim2.new(0,40,1,0)
+    closeBtn.Position = UDim2.new(1,-40,0,0)
+    closeBtn.Text = "X"
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.TextSize = 20
+    closeBtn.BackgroundTransparency = 1
+    closeBtn.TextColor3 = ThemeManager:GetColor("textPrimary")
+    closeBtn.Parent = bar
+    closeBtn.MouseButton1Click:Connect(function()
+        if props.OnClose then props.OnClose() end
+    end)
+
+    return bar
 end
 
-return module
+-- Sidebar
+function Components:CreateSidebar(parent, items)
+    local side = Instance.new("Frame")
+    side.Size = UDim2.new(0,80,1,-40)
+    side.Position = UDim2.new(0,0,0,40)
+    side.BackgroundColor3 = ThemeManager:GetColor("glass")
+    side.Parent = parent
+    Utility:ApplyCorner(side, 16)
+
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0,12)
+    layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    layout.VerticalAlignment = Enum.VerticalAlignment.Top
+    layout.Parent = side
+
+    for _, item in ipairs(items) do
+        local btn = Instance.new("ImageButton")
+        btn.Size = UDim2.new(0,48,0,48)
+        btn.Image = item.Icon
+        btn.Name = item.Name
+        btn.BackgroundTransparency = 1
+        btn.Parent = side
+    end
+
+    return side
+end
+
+return Components
