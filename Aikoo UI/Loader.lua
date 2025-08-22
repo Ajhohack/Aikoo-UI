@@ -1,4 +1,4 @@
--- loadstring(game:HttpGet("https://raw.githubusercontent.com/Ajhohack/Aikoo-X-Lua/refs/heads/main/Loader.lua"))() --
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/Ajhohack/Aikoo-UI/refs/heads/main/Loader.lua"))() --
 
-local MainUIScript = game:HttpGet("https://raw.githubusercontent.com/Ajhohack/Aikoo-X-Lua/refs/heads/main/MainUIFrame.lua")
+local MainUIScript = game:HttpGet("https://raw.githubusercontent.com/Ajhohack/Aikoo-UI/refs/heads/main/Aikoo%20UI/MainUIFrame.lua")
 loadstring(MainUIScript)()
